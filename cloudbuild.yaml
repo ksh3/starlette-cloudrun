@@ -12,10 +12,7 @@ steps:
     args: ["pytest", "-v", "-s"]
     env:
       - DEBUG=1
-      - DATABASE_NAME=docker
-      - DATABASE_USER=docker
-      - DATABASE_PASSWORD=docker
-      - DATABASE_HOST=postgres
+      - DATABASE_URL=postgresql://docker:docker@postgres/docker
   - id: "DEPLOY"
     name: "gcr.io/cloud-builders/gcloud"
     args:
