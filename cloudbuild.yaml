@@ -1,0 +1,29 @@
+steps:
+  # NOTE: Test Step - README
+  - id: "INJECT SERVICE"
+    name: "docker/compose:1.19.0"
+    args: ["-f", "cloudbuild-compose.yaml", "up", "-d"]
+  - id: "BUILD"
+    name: gcr.io/kaniko-project/executor
+    args:
+      - "--destination=gcr.io/$PROJECT_ID/starlette-app:$COMMIT_SHA"
+  - id: "TEST"
+    name: "gcr.io/$PROJECT_ID/starlette-app:$COMMIT_SHA"
+    args: ["pytest", "-v", "-s"]
+  - id: "DEPLOY"
+    name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "beta"
+      - "run"
+      - "deploy"
+      - "starlette-app"
+      - "--allow-unauthenticated"
+      - "--platform"
+      - "managed"
+      - "--project"
+      - "$PROJECT_ID"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/starlette-app/app:$COMMIT_SHA"
+      - "--region"
+      - "asia-northeast1"
+timeout: 900s

@@ -1,0 +1,27 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[scripts]
+dev = "uvicorn main:app --host 127.0.0.1 --debug --port 5000"
+
+[dev-packages]
+autopep8 = "*"
+flake8 = "*"
+ipython = "*"
+
+[packages]
+starlette = "*"
+uvicorn = "*"
+starlette-prometheus = "*"
+python-multipart = "*"
+databases = {extras = ["postgresql"],version = "*"}
+pytz = "*"
+pytest = "*"
+sqlalchemy = "*"
+requests = "*"
+pytest-asyncio = "*"
+
+[requires]
+python_version = "3.7"
