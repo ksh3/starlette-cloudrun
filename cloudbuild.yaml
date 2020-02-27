@@ -10,6 +10,12 @@ steps:
   - id: "TEST"
     name: "gcr.io/$PROJECT_ID/starlette-app:$COMMIT_SHA"
     args: ["pytest", "-v", "-s"]
+    env:
+      - DEBUG=1
+      - DATABASE_NAME=docker
+      - DATABASE_USER=docker
+      - DATABASE_PASSWORD=docker
+      - DATABASE_HOST=postgres
   - id: "DEPLOY"
     name: "gcr.io/cloud-builders/gcloud"
     args:
