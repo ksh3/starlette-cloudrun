@@ -13,6 +13,7 @@ steps:
     env:
       - DEBUG=1
       - DATABASE_URL=postgresql://docker:docker@postgres/docker
+      - TEST_DATABASE_URL=postgresql://docker:docker@postgres/docker
   - id: "DEPLOY"
     name: "gcr.io/cloud-builders/gcloud"
     args:
