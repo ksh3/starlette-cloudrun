@@ -65,19 +65,21 @@ async def repair(request: Request) -> str:
 @app.route('/v1/robots/{robot_id:int}')
 async def retrieve_robot(request: Request) -> str:
     robot_id = request.path_params["robot_id"]
-    logger.debug(robot_id)
 
     values = {'robot_id': robot_id}
     robot = await store.Robot.retrieve(values)
-    logger.debug(robot)
 
-    # task = BackgroundTask(task_repair, robot)
+    task = BackgroundTask(task_count_ref, robot)
     message = {'message': f'Robot is {robot.name}.'}
-    return JSONResponse(message)
+    return JSONResponse(message,  background=task)
 
 
 async def task_repair(robot: store.Robot) -> None:
-    task.repair_robot(robot)
+    await task.repair_robot(robot)
+
+
+async def task_count_ref(robot: store.Robot) -> None:
+    await task.count_ref(robot)
 
 
 if __name__ == '__main__':

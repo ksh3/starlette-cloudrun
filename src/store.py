@@ -41,6 +41,7 @@ class ModelInterface(metaclass=ABCMeta):
 class Robot(ModelInterface):
     id: int
     name: str
+    count: int
     created_at: datetime = datetime.utcnow().replace(tzinfo=pytz.utc)
 
     @classmethod
@@ -54,3 +55,11 @@ class Robot(ModelInterface):
             'values': values
         })
         return cls(**res)
+
+    async def count_ref(self) -> None:
+        await super().execute({
+            'query': """
+                UPDATE robots SET count=(count+1) where id = :id
+            """,
+            'values': {'id': self.id}
+        })
