@@ -62,6 +62,9 @@ async def repair(request: Request) -> str:
     return JSONResponse(message, background=task)
 
 
+async def task_repair(robot: store.Robot) -> None:
+    task.repair_robot(robot)
+
 if __name__ == '__main__':
     uvicorn.run(
         'main:app',
