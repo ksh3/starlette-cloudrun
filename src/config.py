@@ -9,3 +9,4 @@ DATABASE_URL = os.getenv(
     'DATABASE_URL', 'postgresql://docker:docker@127.0.0.1/docker')
 TEST_DATABASE_URL = os.getenv(
     'DATABASE_URL', 'postgresql://docker:docker@127.0.0.1/docker_test')
+LOCAL_NETWORKS = ['127.0.0.1:5000', 'localhost:5000']

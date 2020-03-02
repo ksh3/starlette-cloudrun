@@ -22,17 +22,20 @@ app.add_route("/metrics", metrics)
 if config.DEBUG:
     logger.setLevel(logging.DEBUG)
 else:
-    LOCAL_NETWORKS = ['127.0.0.1:5000', 'localhost:5000']
-    app.add_middleware(ProxyHeadersMiddleware)
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=LOCAL_NETWORKS)
-    app.add_middleware(CORSMiddleware, allow_origins=LOCAL_NETWORKS)
+    app.add_middleware(
+        ProxyHeadersMiddleware)
+    app.add_middleware(
+        TrustedHostMiddleware, allowed_hosts=config.LOCAL_NETWORKS)
+
+app.add_middleware(CORSMiddleware, allow_origins=config.LOCAL_NETWORKS)
 
 
 @app.exception_handler(status.HTTP_403_FORBIDDEN)
 @app.exception_handler(status.HTTP_404_NOT_FOUND)
 @app.exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR)
 async def server_error(request, exc) -> str:
-    return PlainTextResponse(f"{exc.status_code} ERROR")
+    logger.debug(exc.__dict__)
+    return PlainTextResponse(f"{exc.status_code} ERROR", exc.status_code)
 
 
 @app.on_event('startup')
@@ -57,6 +60,20 @@ async def repair(request: Request) -> str:
     task = BackgroundTask(task_repair, robot)
     message = {'message': f'Start repairing {robot.name}.'}
     return JSONResponse(message, background=task)
+
+
+@app.route('/v1/robots/{robot_id:int}')
+async def retrieve_robot(request: Request) -> str:
+    robot_id = request.path_params["robot_id"]
+    logger.debug(robot_id)
+
+    values = {'robot_id': robot_id}
+    robot = await store.Robot.retrieve(values)
+    logger.debug(robot)
+
+    # task = BackgroundTask(task_repair, robot)
+    message = {'message': f'Robot is {robot.name}.'}
+    return JSONResponse(message)
 
 
 async def task_repair(robot: store.Robot) -> None:
