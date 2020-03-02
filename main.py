@@ -62,24 +62,6 @@ async def repair(request: Request) -> str:
     return JSONResponse(message, background=task)
 
 
-@app.route('/v1/robots/{robot_id:int}')
-async def retrieve_robot(request: Request) -> str:
-    robot_id = request.path_params["robot_id"]
-    logger.debug(robot_id)
-
-    values = {'robot_id': robot_id}
-    robot = await store.Robot.retrieve(values)
-    logger.debug(robot)
-
-    # task = BackgroundTask(task_repair, robot)
-    message = {'message': f'Robot is {robot.name}.'}
-    return JSONResponse(message)
-
-
-async def task_repair(robot: store.Robot) -> None:
-    task.repair_robot(robot)
-
-
 if __name__ == '__main__':
     uvicorn.run(
         'main:app',
