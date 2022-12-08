@@ -1,7 +1,7 @@
 -i https://pypi.org/simple
 asyncpg==0.20.1
 attrs==19.3.0
-certifi==2019.11.28
+certifi==2022.12.7
 chardet==3.0.4
 click==7.0
 databases[postgresql]==0.2.6
